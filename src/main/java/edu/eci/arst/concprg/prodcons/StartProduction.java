@@ -31,7 +31,7 @@ public class StartProduction {
         } catch (InterruptedException ex) {
             Logger.getLogger(StartProduction.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        System.out.println(queue);
         
         new Consumer(queue).start();
     }
