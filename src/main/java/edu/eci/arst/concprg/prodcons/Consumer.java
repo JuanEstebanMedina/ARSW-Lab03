@@ -1,6 +1,6 @@
 package edu.eci.arst.concprg.prodcons;
 
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  *
@@ -8,21 +8,21 @@ import java.util.Queue;
  */
 public class Consumer extends Thread {
 
-    private final Queue<Integer> queue;
+    private final BlockingQueue<Integer> queue;
+    private final int consumptionDelayMs;
 
-    public Consumer(Queue<Integer> queue) {
+    public Consumer(BlockingQueue<Integer> queue, int consumptionDelayMs) {
         this.queue = queue;
+        this.consumptionDelayMs = consumptionDelayMs;
     }
 
     @Override
     public void run() {
         try {
             while (true) {
-                synchronized (queue) {
-                    while (queue.isEmpty()) {
-                        queue.wait();
-                    }
-                    pollFromQueue();
+                pollFromQueue();
+                if (consumptionDelayMs > 0) {
+                    Thread.sleep(consumptionDelayMs);
                 }
             }
         } catch (InterruptedException e) {
