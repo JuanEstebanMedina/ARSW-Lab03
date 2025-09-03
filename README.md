@@ -1,20 +1,46 @@
+# ARSW-Lab03
+## Concurrent programming, race conditions, and thread synchronization.
 
-## Escuela Colombiana de Ingeniería
-### Arquitecturas de Software – ARSW
+**Colombian School of Engineering Julio Garavito**  
+**Software Architectures - ARSW**  
+**Laboratory Number 2**
 
+**Members:**
+- Juan Esteban Medina Rivas
+- María Paula Sánchez Macías
 
-#### Ejercicio – programación concurrente, condiciones de carrera y sincronización de hilos. EJERCICIO INDIVIDUAL O EN PAREJAS.
+---
 
-##### Parte I – Antes de terminar la clase.
-
-Control de hilos con wait/notify. Productor/consumidor.
+## Part I - Producer/Consumer
 
 1. Revise el funcionamiento del programa y ejecútelo. Mientras esto ocurren, ejecute jVisualVM y revise el consumo de CPU del proceso correspondiente. A qué se debe este consumo?, cual es la clase responsable?
+
+> El consumo se debe a la clase de *Consumer* debido a que está constantemente preguntando si la queue tiene un elemento para sacar, realizando validaciones innecesarias ya que el *Producer* tiene un tiempo de espera entre cada iteración en la que agrega elementos a la *queue*.
+
+**Ejecución y visualización del código en *jVisualVM***
+
+<img src="img/1.1 visualvm-ARST.png">
+
 2. Haga los ajustes necesarios para que la solución use más eficientemente la CPU, teniendo en cuenta que -por ahora- la producción es lenta y el consumo es rápido. Verifique con JVisualVM que el consumo de CPU se reduzca.
+
+> Como primera solución, pensamos en utilizar *Thread.sleep(1000)* para retardar la ejecución de *Consumer* y así no realizara las validaciones innecesarias, pero esta solución, aunque hace más eficiente el uso de CPU, sigue sin ser la mejor solución al subir la latencia. Para ello vamos a implementar un control de hilos con wait/notifyAll, lo que hará que la implementación sea más eficiente en términos de uso de CPU pero sin aumentar la latencia.
+
+**Resultado de la ejecución del código**
+<img src="img/1.2 wait-notifyall.png">
+
+**Ejecución y visualización del código eficiente en *jVisualVM***
+
+<img src="img/1.2 visualvm-efficient.png">
+
 3. Haga que ahora el productor produzca muy rápido, y el consumidor consuma lento. Teniendo en cuenta que el productor conoce un límite de Stock (cuantos elementos debería tener, a lo sumo en la cola), haga que dicho límite se respete. Revise el API de la colección usada como cola para ver cómo garantizar que dicho límite no se supere. Verifique que, al poner un límite pequeño para el 'stock', no haya consumo alto de CPU ni errores.
 
+> Para este requerimiento utilizaremos *BlockingQueue*, clase la cual tiene definido de manera correcta la utilización de varios hilos, al bloquearse mientras está siendo utilizado por un hilo y desbloquearse cuando terminen la acción. Además, da la posibilidad de poner un límite de elementos que irán dentro del arreglo, cumpliendo con el requerimiento del ejercicio.
 
-##### Parte II. – Antes de terminar la clase.
+**Resultado de la ejecución del código para un límite de Stock de 3**
+
+<img src="img/1.3 BlockingQueue.png">
+
+## Parte II. – Antes de terminar la clase.
 
 Teniendo en cuenta los conceptos vistos de condición de carrera y sincronización, haga una nueva versión -más eficiente- del ejercicio anterior (el buscador de listas negras). En la versión actual, cada hilo se encarga de revisar el host en la totalidad del subconjunto de servidores que le corresponde, de manera que en conjunto se están explorando la totalidad de servidores. Teniendo esto en cuenta, haga que:
 
