@@ -1,38 +1,37 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.eci.arst.concprg.prodcons;
 
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  *
  * @author hcadavid
  */
-public class Consumer extends Thread{
-    
-    private Queue<Integer> queue;
-    
-    
-    public Consumer(Queue<Integer> queue){
-        this.queue=queue;        
+public class Consumer extends Thread {
+
+    private final BlockingQueue<Integer> queue;
+    private final int consumptionDelayMs;
+
+    public Consumer(BlockingQueue<Integer> queue, int consumptionDelayMs) {
+        this.queue = queue;
+        this.consumptionDelayMs = consumptionDelayMs;
     }
-    
+
     @Override
     public void run() {
-        while (true) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        try {
+            while (true) {
+                pollFromQueue();
+                if (consumptionDelayMs > 0) {
+                    Thread.sleep(consumptionDelayMs);
+                }
             }
-            if (queue.size() > 0) {
-                int elem=queue.poll();
-                System.out.println("Consumer consumes "+elem);                                
-            }
-            
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
+    }
+
+    public void pollFromQueue() {
+        int item = queue.poll();
+        System.out.println("Consumer consumes " + item);
     }
 }

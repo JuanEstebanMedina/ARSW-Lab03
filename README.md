@@ -1,20 +1,46 @@
+# ARSW-Lab03
+## Concurrent programming, race conditions, and thread synchronization.
 
-## Escuela Colombiana de Ingeniería
-### Arquitecturas de Software – ARSW
+**Colombian School of Engineering Julio Garavito**  
+**Software Architectures - ARSW**  
+**Laboratory Number 2**
 
+**Members:**
+- Juan Esteban Medina Rivas
+- María Paula Sánchez Macías
 
-#### Ejercicio – programación concurrente, condiciones de carrera y sincronización de hilos. EJERCICIO INDIVIDUAL O EN PAREJAS.
+---
 
-##### Parte I – Antes de terminar la clase.
+## Part I - Producer/Consumer
 
-Control de hilos con wait/notify. Productor/consumidor.
+1. Check the program's operation and run it. While this is happening, run jVisualVM and check the CPU consumption of the corresponding process. What is causing this consumption? Which class is responsible?
 
-1. Revise el funcionamiento del programa y ejecútelo. Mientras esto ocurren, ejecute jVisualVM y revise el consumo de CPU del proceso correspondiente. A qué se debe este consumo?, cual es la clase responsable?
-2. Haga los ajustes necesarios para que la solución use más eficientemente la CPU, teniendo en cuenta que -por ahora- la producción es lenta y el consumo es rápido. Verifique con JVisualVM que el consumo de CPU se reduzca.
-3. Haga que ahora el productor produzca muy rápido, y el consumidor consuma lento. Teniendo en cuenta que el productor conoce un límite de Stock (cuantos elementos debería tener, a lo sumo en la cola), haga que dicho límite se respete. Revise el API de la colección usada como cola para ver cómo garantizar que dicho límite no se supere. Verifique que, al poner un límite pequeño para el 'stock', no haya consumo alto de CPU ni errores.
+> Consumption is due to the *Consumer* class because it is constantly checking whether the *queue* has an element to remove, performing unnecessary validations since the *Producer* has a wait time between each iteration in which it adds elements to the *queue*.
 
+**Code execution and visualization in *jVisualVM***
 
-##### Parte II. – Antes de terminar la clase.
+<img src="img/1.1 visualvm-ARST.png">
+
+2. Make the necessary adjustments so that the solution uses the CPU more efficiently, bearing in mind that, for now, production is slow and consumption is fast. Check with JVisualVM that CPU consumption is reduced.
+
+> As a first solution, we considered using *Thread.sleep(1000)* to delay the execution of *Consumer* and thus avoid unnecessary validations, but this solution, although it makes CPU usage more efficient, is still not the best solution as it increases latency. To address this, we are going to implement thread control with wait/notifyAll, which will make the implementation more efficient in terms of CPU usage without increasing latency.
+
+**Code execution results**
+<img src="img/1.2 wait-notifyall.png">
+
+**Efficient code execution and visualization in *jVisualVM***
+
+<img src="img/1.2 visualvm-efficient.png">
+
+3. Now make the producer produce very quickly and the consumer consume slowly. Given that the producer knows a stock limit (how many items it should have, at most, in the queue), make sure that this limit is respected. Check the API of the collection used as a queue to see how to ensure that this limit is not exceeded. Verify that, when setting a small limit for ‘stock’, there is no high CPU consumption or errors.
+
+> For this requirement, we will use *BlockingQueue*, a class that correctly defines the use of multiple threads, blocking while being used by a thread and unblocking when the action is complete. It also allows you to set a limit on the number of elements that will go into the array, meeting the requirements of the exercise.
+
+**Result of executing the code for a stock limit of 3**
+
+<img src="img/1.3 BlockingQueue.png">
+
+## Parte II. – Antes de terminar la clase.
 
 Teniendo en cuenta los conceptos vistos de condición de carrera y sincronización, haga una nueva versión -más eficiente- del ejercicio anterior (el buscador de listas negras). En la versión actual, cada hilo se encarga de revisar el host en la totalidad del subconjunto de servidores que le corresponde, de manera que en conjunto se están explorando la totalidad de servidores. Teniendo esto en cuenta, haga que:
 
