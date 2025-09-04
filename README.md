@@ -13,30 +13,30 @@
 
 ## Part I - Producer/Consumer
 
-1. Revise el funcionamiento del programa y ejecútelo. Mientras esto ocurren, ejecute jVisualVM y revise el consumo de CPU del proceso correspondiente. A qué se debe este consumo?, cual es la clase responsable?
+1. Check the program's operation and run it. While this is happening, run jVisualVM and check the CPU consumption of the corresponding process. What is causing this consumption? Which class is responsible?
 
-> El consumo se debe a la clase de *Consumer* debido a que está constantemente preguntando si la queue tiene un elemento para sacar, realizando validaciones innecesarias ya que el *Producer* tiene un tiempo de espera entre cada iteración en la que agrega elementos a la *queue*.
+> Consumption is due to the *Consumer* class because it is constantly checking whether the *queue* has an element to remove, performing unnecessary validations since the *Producer* has a wait time between each iteration in which it adds elements to the *queue*.
 
-**Ejecución y visualización del código en *jVisualVM***
+**Code execution and visualization in *jVisualVM***
 
 <img src="img/1.1 visualvm-ARST.png">
 
-2. Haga los ajustes necesarios para que la solución use más eficientemente la CPU, teniendo en cuenta que -por ahora- la producción es lenta y el consumo es rápido. Verifique con JVisualVM que el consumo de CPU se reduzca.
+2. Make the necessary adjustments so that the solution uses the CPU more efficiently, bearing in mind that, for now, production is slow and consumption is fast. Check with JVisualVM that CPU consumption is reduced.
 
-> Como primera solución, pensamos en utilizar *Thread.sleep(1000)* para retardar la ejecución de *Consumer* y así no realizara las validaciones innecesarias, pero esta solución, aunque hace más eficiente el uso de CPU, sigue sin ser la mejor solución al subir la latencia. Para ello vamos a implementar un control de hilos con wait/notifyAll, lo que hará que la implementación sea más eficiente en términos de uso de CPU pero sin aumentar la latencia.
+> As a first solution, we considered using *Thread.sleep(1000)* to delay the execution of *Consumer* and thus avoid unnecessary validations, but this solution, although it makes CPU usage more efficient, is still not the best solution as it increases latency. To address this, we are going to implement thread control with wait/notifyAll, which will make the implementation more efficient in terms of CPU usage without increasing latency.
 
-**Resultado de la ejecución del código**
+**Code execution results**
 <img src="img/1.2 wait-notifyall.png">
 
-**Ejecución y visualización del código eficiente en *jVisualVM***
+**Efficient code execution and visualization in *jVisualVM***
 
 <img src="img/1.2 visualvm-efficient.png">
 
-3. Haga que ahora el productor produzca muy rápido, y el consumidor consuma lento. Teniendo en cuenta que el productor conoce un límite de Stock (cuantos elementos debería tener, a lo sumo en la cola), haga que dicho límite se respete. Revise el API de la colección usada como cola para ver cómo garantizar que dicho límite no se supere. Verifique que, al poner un límite pequeño para el 'stock', no haya consumo alto de CPU ni errores.
+3. Now make the producer produce very quickly and the consumer consume slowly. Given that the producer knows a stock limit (how many items it should have, at most, in the queue), make sure that this limit is respected. Check the API of the collection used as a queue to see how to ensure that this limit is not exceeded. Verify that, when setting a small limit for ‘stock’, there is no high CPU consumption or errors.
 
-> Para este requerimiento utilizaremos *BlockingQueue*, clase la cual tiene definido de manera correcta la utilización de varios hilos, al bloquearse mientras está siendo utilizado por un hilo y desbloquearse cuando terminen la acción. Además, da la posibilidad de poner un límite de elementos que irán dentro del arreglo, cumpliendo con el requerimiento del ejercicio.
+> For this requirement, we will use *BlockingQueue*, a class that correctly defines the use of multiple threads, blocking while being used by a thread and unblocking when the action is complete. It also allows you to set a limit on the number of elements that will go into the array, meeting the requirements of the exercise.
 
-**Resultado de la ejecución del código para un límite de Stock de 3**
+**Result of executing the code for a stock limit of 3**
 
 <img src="img/1.3 BlockingQueue.png">
 
