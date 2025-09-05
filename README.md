@@ -141,7 +141,7 @@ public void changeHealth(int v) {
 - By using a single synchronization object, it avoids deadlocks between multiple locks.
 
 
-> 7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
+> 7. After implementing your strategy, run your program and pay attention to whether it stops. If it does, use the jps and jstack programs to identify why the program stopped.
 
 By using a strategy with a single object for synchronization, we avoid any kind of problem, and the program did not freeze at any point.
 
