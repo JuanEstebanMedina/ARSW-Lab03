@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.eci.arsw.spamkeywordsdatasource;
+package edu.eci.blacklist.spamkeywordsdatasource;
 
 import java.util.Map;
 import java.util.Objects;

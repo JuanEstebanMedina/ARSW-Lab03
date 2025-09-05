@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.eci.arsw.blacklistvalidator;
+package edu.eci.blacklist.blacklistvalidator;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.eci.arsw.spamkeywordsdatasource.HostBlacklistsDataSourceFacade;
-import edu.eci.arsw.threads.BlackListThread;
+import edu.eci.blacklist.spamkeywordsdatasource.HostBlacklistsDataSourceFacade;
+import edu.eci.blacklist.threads.BlackListThread;
 
 /**
  *
@@ -125,7 +125,7 @@ public class HostBlackListsValidator {
                 // ocurrencesCount += thread.getOcurrencesCount();
                 checkedListsCount += thread.getCheckedListsCount();
                 blackListOcurrences.addAll(thread.getBlackListOcurrences());
-                System.out.println("thread.getBlackListOcurrences() " + thread.getBlackListOcurrences());
+                // System.out.println("thread.getBlackListOcurrences() " + thread.getBlackListOcurrences());
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 LOG.log(Level.SEVERE, "Thread interrupted", e);

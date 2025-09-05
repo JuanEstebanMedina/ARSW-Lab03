@@ -1,11 +1,11 @@
-package edu.eci.arsw.threads;
+package edu.eci.blacklist.threads;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.eci.arsw.spamkeywordsdatasource.HostBlacklistsDataSourceFacade;
+import edu.eci.blacklist.spamkeywordsdatasource.HostBlacklistsDataSourceFacade;
 
 public class BlackListThread extends Thread {
 
@@ -52,7 +52,7 @@ public class BlackListThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("\nBlackListThread is running...");
+        // System.out.println("\nBlackListThread is running...");
         checkHost(start, end, ipaddress);
     }
 

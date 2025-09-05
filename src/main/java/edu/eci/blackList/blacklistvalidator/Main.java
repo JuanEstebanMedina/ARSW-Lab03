@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.eci.arsw.blacklistvalidator;
+package edu.eci.blacklist.blacklistvalidator;
 
 import java.util.List;
 
@@ -13,11 +13,12 @@ import java.util.List;
  */
 public class Main {
     
-    public static void main(String a[]){
+    public static void main(String[] a){
         HostBlackListsValidator hblv=new HostBlackListsValidator();
         //int cores = Runtime.getRuntime().availableProcessors();
         //System.out.println("numero de Procesadores:"+cores);
-        List<Integer> blackListOcurrences=hblv.checkHost("202.24.34.55", 1000);
+        System.out.println("Threads searching...");
+        List<Integer> blackListOcurrences=hblv.checkHost("202.24.34.55", 10);
         System.out.println("The host was found in the following blacklists:"+blackListOcurrences);
         }
     
