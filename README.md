@@ -40,12 +40,18 @@
 
 <img src="img/1.3 BlockingQueue.png">
 
-## Parte II. – Antes de terminar la clase.
+## Part II. – BlackListValidator
 
-Teniendo en cuenta los conceptos vistos de condición de carrera y sincronización, haga una nueva versión -más eficiente- del ejercicio anterior (el buscador de listas negras). En la versión actual, cada hilo se encarga de revisar el host en la totalidad del subconjunto de servidores que le corresponde, de manera que en conjunto se están explorando la totalidad de servidores. Teniendo esto en cuenta, haga que:
+Taking into account the concepts of race conditions and synchronization, create a new, more efficient version of the previous exercise (the blacklist search engine). In the current version, each thread is responsible for checking the host in its entire subset of servers, so that all servers are being scanned as a whole. With this in mind, make sure that:
 
-- La búsqueda distribuida se detenga (deje de buscar en las listas negras restantes) y retorne la respuesta apenas, en su conjunto, los hilos hayan detectado el número de ocurrencias requerido que determina si un host es confiable o no (_BLACK_LIST_ALARM_COUNT_).
-- Lo anterior, garantizando que no se den condiciones de carrera.
+- Distributed search stops (stops searching the remaining blacklists) and returns the response as soon as, collectively, the threads have detected the required number of occurrences that determines whether a host is trustworthy or not (_BLACK_LIST_ALARM_COUNT_).
+- The above ensures that no race conditions occur.
+
+> We created a synchronization object, along with a flag to stop the thread when necessary, and made the number of occurrences found shared between threads so that all of them are aware of the number found.
+
+**Result of executing the code with efficient solution**
+
+<img src="img/2.1 solutionExecution.png">
 
 ##### Parte III. – Avance para el martes, antes de clase.
 
