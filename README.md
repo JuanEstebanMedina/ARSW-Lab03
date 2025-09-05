@@ -47,20 +47,21 @@ Teniendo en cuenta los conceptos vistos de condición de carrera y sincronizaci�
 - La búsqueda distribuida se detenga (deje de buscar en las listas negras restantes) y retorne la respuesta apenas, en su conjunto, los hilos hayan detectado el número de ocurrencias requerido que determina si un host es confiable o no (_BLACK_LIST_ALARM_COUNT_).
 - Lo anterior, garantizando que no se den condiciones de carrera.
 
-##### Parte III. – Avance para el martes, antes de clase.
+## Part III - Immortals
 
-Sincronización y Dead-Locks.
+**Context of the problem**
 
 ![](http://files.explosm.net/comics/Matt/Bummed-forever.png)
 
-1. Revise el programa “highlander-simulator”, dispuesto en el paquete edu.eci.arsw.highlandersim. Este es un juego en el que:
+>1. This is a game in which:
+There are N immortal players.
+Each player knows the other N−1 players.
+Each player continuously attacks another immortal. The one who attacks first subtracts M health points from their opponent and adds the same amount to their own health.
+The game may never have a single winner. Most likely, in the end, only two players will remain, fighting endlessly by gaining and losing health points.
 
-	* Se tienen N jugadores inmortales.
-	* Cada jugador conoce a los N-1 jugador restantes.
-	* Cada jugador, permanentemente, ataca a algún otro inmortal. El que primero ataca le resta M puntos de vida a su contrincante, y aumenta en esta misma cantidad sus propios puntos de vida.
-	* El juego podría nunca tener un único ganador. Lo más probable es que al final sólo queden dos, peleando indefinidamente quitando y sumando puntos de vida.
+>2. How was the game's functionality implemented in the original code?
 
-2. Revise el código e identifique cómo se implemento la funcionalidad antes indicada. Dada la intención del juego, un invariante debería ser que la sumatoria de los puntos de vida de todos los jugadores siempre sea el mismo(claro está, en un instante de tiempo en el que no esté en proceso una operación de incremento/reducción de tiempo). Para este caso, para N jugadores, cual debería ser este valor?.
+
 
 3. Ejecute la aplicación y verifique cómo funcionan las opción ‘pause and check’. Se cumple el invariante?.
 
