@@ -59,29 +59,92 @@ Each player knows the other N−1 players.
 Each player continuously attacks another immortal. The one who attacks first subtracts M health points from their opponent and adds the same amount to their own health.
 The game may never have a single winner. Most likely, in the end, only two players will remain, fighting endlessly by gaining and losing health points.
 
->2. How was the game's functionality implemented in the original code?
+>2.1 How was the game's functionality implemented in the original code?
+
+The functionality was implemented as follows:
+
+- Each immortal is a thread (extends `Thread`) that runs an infinite loop in the `run()` method.
+
+- In each iteration, the immortal randomly selects an opponent from the `immortalsPopulation` list, making sure not to attack itself.
+
+- The `fight()` method implements the combat mechanics: if the opponent has `health > 0`, it subtracts `defaultDamageValue` (10 points) from the opponent and adds the same amount to its own health.
+
+```java
+if (i2.getHealth() > 0) {
+    i2.changeHealth(i2.getHealth() - defaultDamageValue);
+    this.health += defaultDamageValue;
+}
+```
+>2.2 Given the intention of the game, what should be the total sum of all players' health points for N players?
+
+The value should be N × 100, where N is the number of players. This is because each immortal starts with DEFAULT_IMMORTAL_HEALTH = 100 health points, and during fights, the health points one immortal loses are exactly the same as those gained by another. For example: For 3 immortals, the total would be 300 health points.
+
+>3.1 How does the 'pause and check' option work?
+
+Tests
+
+<img src="img/part3 HealthInconcurrent.png">
+
+>3.1 Is the invariant satisfied?
+
+No, each time the button is clicked, the total health changes completely and does not maintain the consistency it should.
+
+>4. Do whatever is necessary so that before printing the current results, all other threads are paused. Additionally, implement the ‘resume’ option.
+
+**Pause and Check Buttom**
+
+<img src="img/part3 PauseButtom.png">
+
+**Resume Buttom**
+
+<img src="img/part3 ResumeButtom.png">
+
+5. Check the functionality again. Is the invariant satisfied or not?
+
+Yes, the invariant satisfied the conditions
+
+New Test
+
+<img src="img/part3 HealthPerfect1.png">
+
+<img src="img/part3 HealthPerfect2.png">
+
+<img src="img/part3 HealthPerfect3.png">
+
+>6 Identify possible critical regions concerning the fight between the immortals and implement a locking strategy.
+
+Identified Critical Regions:
+
+**Main Critical Region – Health Transfer:**
+
+```java
+    i2.changeHealth(i2.getHealth() - defaultDamageValue);
+    this.health += defaultDamageValue;
+    updateCallback.processReport("Fight: " + this + " vs " + i2 + "\n");
+```
+**changeHealth() Method:**
+
+```java
+public void changeHealth(int v) {
+    health = v;
+}
+```
+
+**Locking Strategy Used:**
+
+- A single synchronization object (`syncObject`) shared among all immortals.
+
+- All fights are synchronized using this single object.
+
+- This completely serializes the fights.
+
+- By using a single synchronization object, it avoids deadlocks between multiple locks.
 
 
+>7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
 
-3. Ejecute la aplicación y verifique cómo funcionan las opción ‘pause and check’. Se cumple el invariante?.
+By using a strategy with a single object for synchronization, we avoid any kind of problem, and the program did not freeze at any point.
 
-4. Una primera hipótesis para que se presente la condición de carrera para dicha función (pause and check), es que el programa consulta la lista cuyos valores va a imprimir, a la vez que otros hilos modifican sus valores. Para corregir esto, haga lo que sea necesario para que efectivamente, antes de imprimir los resultados actuales, se pausen todos los demás hilos. Adicionalmente, implemente la opción ‘resume’.
-
-5. Verifique nuevamente el funcionamiento (haga clic muchas veces en el botón). Se cumple o no el invariante?.
-
-6. Identifique posibles regiones críticas en lo que respecta a la pelea de los inmortales. Implemente una estrategia de bloqueo que evite las condiciones de carrera. Recuerde que si usted requiere usar dos o más ‘locks’ simultáneamente, puede usar bloques sincronizados anidados:
-
-	```java
-	synchronized(locka){
-		synchronized(lockb){
-			…
-		}
-	}
-	```
-
-7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
-
-8. Plantee una estrategia para corregir el problema antes identificado (puede revisar de nuevo las páginas 206 y 207 de _Java Concurrency in Practice_).
 
 9. Once the problem has been corrected, verify that the program continues to function consistently when 100, 1,000, or 10,000 immortals are executed. If, in these large cases, the invariant begins to fail again, you must analyze what was done in step 4.
 
