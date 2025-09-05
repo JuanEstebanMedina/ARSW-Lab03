@@ -81,21 +81,21 @@ if (i2.getHealth() > 0) {
     this.health += defaultDamageValue;
 }
 ```
->2.2 Given the intention of the game, what should be the total sum of all players' health points for N players?
+> 2.2 Given the intention of the game, what should be the total sum of all players' health points for N players?
 
 The value should be N × 100, where N is the number of players. This is because each immortal starts with DEFAULT_IMMORTAL_HEALTH = 100 health points, and during fights, the health points one immortal loses are exactly the same as those gained by another. For example: For 3 immortals, the total would be 300 health points.
 
->3.1 How does the 'pause and check' option work?
+> 3.1 How does the 'pause and check' option work?
 
 Tests
 
 <img src="img/part3 HealthInconcurrent.png">
 
->3.1 Is the invariant satisfied?
+> 3.1 Is the invariant satisfied?
 
 No, each time the button is clicked, the total health changes completely and does not maintain the consistency it should.
 
->4. Do whatever is necessary so that before printing the current results, all other threads are paused. Additionally, implement the ‘resume’ option.
+> 4. Do whatever is necessary so that before printing the current results, all other threads are paused. Additionally, implement the ‘resume’ option.
 
 **Pause and Check Buttom**
 
@@ -105,7 +105,7 @@ No, each time the button is clicked, the total health changes completely and doe
 
 <img src="img/part3 ResumeButtom.png">
 
-5. Check the functionality again. Is the invariant satisfied or not?
+> 5. Check the functionality again. Is the invariant satisfied or not?
 
 Yes, the invariant satisfied the conditions
 
@@ -117,7 +117,7 @@ New Test
 
 <img src="img/part3 HealthPerfect3.png">
 
->6 Identify possible critical regions concerning the fight between the immortals and implement a locking strategy.
+> 6 Identify possible critical regions concerning the fight between the immortals and implement a locking strategy.
 
 Identified Critical Regions:
 
