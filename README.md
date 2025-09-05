@@ -13,17 +13,17 @@
 
 ## Part I - Producer/Consumer
 
-1. Check the program's operation and run it. While this is happening, run jVisualVM and check the CPU consumption of the corresponding process. What is causing this consumption? Which class is responsible?
+> 1. Check the program's operation and run it. While this is happening, run jVisualVM and check the CPU consumption of the corresponding process. What is causing this consumption? Which class is responsible?
 
-> Consumption is due to the *Consumer* class because it is constantly checking whether the *queue* has an element to remove, performing unnecessary validations since the *Producer* has a wait time between each iteration in which it adds elements to the *queue*.
+Consumption is due to the *Consumer* class because it is constantly checking whether the *queue* has an element to remove, performing unnecessary validations since the *Producer* has a wait time between each iteration in which it adds elements to the *queue*.
 
 **Code execution and visualization in *jVisualVM***
 
 <img src="img/1.1 visualvm-ARST.png">
 
-2. Make the necessary adjustments so that the solution uses the CPU more efficiently, bearing in mind that, for now, production is slow and consumption is fast. Check with JVisualVM that CPU consumption is reduced.
+> 2. Make the necessary adjustments so that the solution uses the CPU more efficiently, bearing in mind that, for now, production is slow and consumption is fast. Check with JVisualVM that CPU consumption is reduced.
 
-> As a first solution, we considered using *Thread.sleep(1000)* to delay the execution of *Consumer* and thus avoid unnecessary validations, but this solution, although it makes CPU usage more efficient, is still not the best solution as it increases latency. To address this, we are going to implement thread control with wait/notifyAll, which will make the implementation more efficient in terms of CPU usage without increasing latency.
+As a first solution, we considered using *Thread.sleep(1000)* to delay the execution of *Consumer* and thus avoid unnecessary validations, but this solution, although it makes CPU usage more efficient, is still not the best solution as it increases latency. To address this, we are going to implement thread control with wait/notifyAll, which will make the implementation more efficient in terms of CPU usage without increasing latency.
 
 **Code execution results**
 <img src="img/1.2 wait-notifyall.png">
@@ -32,9 +32,9 @@
 
 <img src="img/1.2 visualvm-efficient.png">
 
-3. Now make the producer produce very quickly and the consumer consume slowly. Given that the producer knows a stock limit (how many items it should have, at most, in the queue), make sure that this limit is respected. Check the API of the collection used as a queue to see how to ensure that this limit is not exceeded. Verify that, when setting a small limit for ‘stock’, there is no high CPU consumption or errors.
+> 3. Now make the producer produce very quickly and the consumer consume slowly. Given that the producer knows a stock limit (how many items it should have, at most, in the queue), make sure that this limit is respected. Check the API of the collection used as a queue to see how to ensure that this limit is not exceeded. Verify that, when setting a small limit for ‘stock’, there is no high CPU consumption or errors.
 
-> For this requirement, we will use *BlockingQueue*, a class that correctly defines the use of multiple threads, blocking while being used by a thread and unblocking when the action is complete. It also allows you to set a limit on the number of elements that will go into the array, meeting the requirements of the exercise.
+For this requirement, we will use *BlockingQueue*, a class that correctly defines the use of multiple threads, blocking while being used by a thread and unblocking when the action is complete. It also allows you to set a limit on the number of elements that will go into the array, meeting the requirements of the exercise.
 
 **Result of executing the code for a stock limit of 3**
 
@@ -53,48 +53,136 @@ Taking into account the concepts of race conditions and synchronization, create 
 
 <img src="img/2.1 solutionExecution.png">
 
-##### Parte III. – Avance para el martes, antes de clase.
+## Part III - Immortals
 
-Sincronización y Dead-Locks.
+**Context of the problem**
 
 ![](http://files.explosm.net/comics/Matt/Bummed-forever.png)
 
-1. Revise el programa “highlander-simulator”, dispuesto en el paquete edu.eci.arsw.highlandersim. Este es un juego en el que:
+>1. This is a game in which:
+There are N immortal players.
+Each player knows the other N−1 players.
+Each player continuously attacks another immortal. The one who attacks first subtracts M health points from their opponent and adds the same amount to their own health.
+The game may never have a single winner. Most likely, in the end, only two players will remain, fighting endlessly by gaining and losing health points.
 
-	* Se tienen N jugadores inmortales.
-	* Cada jugador conoce a los N-1 jugador restantes.
-	* Cada jugador, permanentemente, ataca a algún otro inmortal. El que primero ataca le resta M puntos de vida a su contrincante, y aumenta en esta misma cantidad sus propios puntos de vida.
-	* El juego podría nunca tener un único ganador. Lo más probable es que al final sólo queden dos, peleando indefinidamente quitando y sumando puntos de vida.
+>2.1 How was the game's functionality implemented in the original code?
 
-2. Revise el código e identifique cómo se implemento la funcionalidad antes indicada. Dada la intención del juego, un invariante debería ser que la sumatoria de los puntos de vida de todos los jugadores siempre sea el mismo(claro está, en un instante de tiempo en el que no esté en proceso una operación de incremento/reducción de tiempo). Para este caso, para N jugadores, cual debería ser este valor?.
+The functionality was implemented as follows:
 
-3. Ejecute la aplicación y verifique cómo funcionan las opción ‘pause and check’. Se cumple el invariante?.
+- Each immortal is a thread (extends `Thread`) that runs an infinite loop in the `run()` method.
 
-4. Una primera hipótesis para que se presente la condición de carrera para dicha función (pause and check), es que el programa consulta la lista cuyos valores va a imprimir, a la vez que otros hilos modifican sus valores. Para corregir esto, haga lo que sea necesario para que efectivamente, antes de imprimir los resultados actuales, se pausen todos los demás hilos. Adicionalmente, implemente la opción ‘resume’.
+- In each iteration, the immortal randomly selects an opponent from the `immortalsPopulation` list, making sure not to attack itself.
 
-5. Verifique nuevamente el funcionamiento (haga clic muchas veces en el botón). Se cumple o no el invariante?.
+- The `fight()` method implements the combat mechanics: if the opponent has `health > 0`, it subtracts `defaultDamageValue` (10 points) from the opponent and adds the same amount to its own health.
 
-6. Identifique posibles regiones críticas en lo que respecta a la pelea de los inmortales. Implemente una estrategia de bloqueo que evite las condiciones de carrera. Recuerde que si usted requiere usar dos o más ‘locks’ simultáneamente, puede usar bloques sincronizados anidados:
+```java
+if (i2.getHealth() > 0) {
+    i2.changeHealth(i2.getHealth() - defaultDamageValue);
+    this.health += defaultDamageValue;
+}
+```
+>2.2 Given the intention of the game, what should be the total sum of all players' health points for N players?
 
-	```java
-	synchronized(locka){
-		synchronized(lockb){
-			…
-		}
-	}
-	```
+The value should be N × 100, where N is the number of players. This is because each immortal starts with DEFAULT_IMMORTAL_HEALTH = 100 health points, and during fights, the health points one immortal loses are exactly the same as those gained by another. For example: For 3 immortals, the total would be 300 health points.
 
-7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
+>3.1 How does the 'pause and check' option work?
 
-8. Plantee una estrategia para corregir el problema antes identificado (puede revisar de nuevo las páginas 206 y 207 de _Java Concurrency in Practice_).
+Tests
 
-9. Una vez corregido el problema, rectifique que el programa siga funcionando de manera consistente cuando se ejecutan 100, 1000 o 10000 inmortales. Si en estos casos grandes se empieza a incumplir de nuevo el invariante, debe analizar lo realizado en el paso 4.
+<img src="img/part3 HealthInconcurrent.png">
 
-10. Un elemento molesto para la simulación es que en cierto punto de la misma hay pocos 'inmortales' vivos realizando peleas fallidas con 'inmortales' ya muertos. Es necesario ir suprimiendo los inmortales muertos de la simulación a medida que van muriendo. Para esto:
-	* Analizando el esquema de funcionamiento de la simulación, esto podría crear una condición de carrera? Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma. Escriba sus conclusiones al respecto en el archivo RESPUESTAS.txt.
-	* Corrija el problema anterior __SIN hacer uso de sincronización__, pues volver secuencial el acceso a la lista compartida de inmortales haría extremadamente lenta la simulación.
+>3.1 Is the invariant satisfied?
 
-11. Para finalizar, implemente la opción STOP.
+No, each time the button is clicked, the total health changes completely and does not maintain the consistency it should.
+
+>4. Do whatever is necessary so that before printing the current results, all other threads are paused. Additionally, implement the ‘resume’ option.
+
+**Pause and Check Buttom**
+
+<img src="img/part3 PauseButtom.png">
+
+**Resume Buttom**
+
+<img src="img/part3 ResumeButtom.png">
+
+5. Check the functionality again. Is the invariant satisfied or not?
+
+Yes, the invariant satisfied the conditions
+
+New Test
+
+<img src="img/part3 HealthPerfect1.png">
+
+<img src="img/part3 HealthPerfect2.png">
+
+<img src="img/part3 HealthPerfect3.png">
+
+>6 Identify possible critical regions concerning the fight between the immortals and implement a locking strategy.
+
+Identified Critical Regions:
+
+**Main Critical Region – Health Transfer:**
+
+```java
+    i2.changeHealth(i2.getHealth() - defaultDamageValue);
+    this.health += defaultDamageValue;
+    updateCallback.processReport("Fight: " + this + " vs " + i2 + "\n");
+```
+**changeHealth() Method:**
+
+```java
+public void changeHealth(int v) {
+    health = v;
+}
+```
+
+**Locking Strategy Used:**
+
+- A single synchronization object (`syncObject`) shared among all immortals.
+
+- All fights are synchronized using this single object.
+
+- This completely serializes the fights.
+
+- By using a single synchronization object, it avoids deadlocks between multiple locks.
+
+
+> 7. After implementing your strategy, run your program and pay attention to whether it stops. If it does, use the jps and jstack programs to identify why the program stopped.
+
+By using a strategy with a single object for synchronization, we avoid any kind of problem, and the program did not freeze at any point.
+
+
+> 9. Once the problem has been corrected, verify that the program continues to function consistently when 100, 1,000, or 10,000 immortals are executed. If, in these large cases, the invariant begins to fail again, you must analyze what was done in step 4.
+
+**Testing 10 Inmortals**
+
+<img src="img/3.9 10Inmortals.png">
+
+**Testing 100 Inmortals**
+
+<img src="img/3.9 100Inmortals.png">
+
+**Testing 1000 Inmortals**
+
+<img src="img/3.9 1000Inmortals.png">
+
+**Testing 10000 Inmortals**
+
+<img src="img/3.9 10000Inmortals.png">
+
+> 10. One annoying element of the simulation is that at a certain point there are few living ‘immortals’ left, fighting futile battles with ‘immortals’ who are already dead. It is necessary to remove the dead immortals from the simulation as they die. To do this:
+* Analyzing the simulation's operating scheme, could this create a race condition? Implement the functionality, run the simulation, and observe what problem arises when there are many ‘immortals’ in it.
+* Correct the above problem __WITHOUT using synchronization__, as making access to the shared list of immortals sequential would make the simulation extremely slow.
+
+To do this, we created a new flag *isDead* which is updated when the immortal's life is equal to or less than 0, which means that it is no longer counted as a combat option, thus avoiding failed battles.
+
+> 11. Finally, implement the STOP option.
+
+We make all the threads to be dead with *killinmortal* function so the STOP button works correctly and doesn't allow to resume the execution.
+
+**Testing Stop Button**
+
+<img src="img/3.11 stopButton.png">
 
 <!--
 ### Criterios de evaluación
