@@ -83,13 +83,37 @@ The game may never have a single winner. Most likely, in the end, only two playe
 
 8. Plantee una estrategia para corregir el problema antes identificado (puede revisar de nuevo las páginas 206 y 207 de _Java Concurrency in Practice_).
 
-9. Una vez corregido el problema, rectifique que el programa siga funcionando de manera consistente cuando se ejecutan 100, 1000 o 10000 inmortales. Si en estos casos grandes se empieza a incumplir de nuevo el invariante, debe analizar lo realizado en el paso 4.
+9. Once the problem has been corrected, verify that the program continues to function consistently when 100, 1,000, or 10,000 immortals are executed. If, in these large cases, the invariant begins to fail again, you must analyze what was done in step 4.
 
-10. Un elemento molesto para la simulación es que en cierto punto de la misma hay pocos 'inmortales' vivos realizando peleas fallidas con 'inmortales' ya muertos. Es necesario ir suprimiendo los inmortales muertos de la simulación a medida que van muriendo. Para esto:
-	* Analizando el esquema de funcionamiento de la simulación, esto podría crear una condición de carrera? Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma. Escriba sus conclusiones al respecto en el archivo RESPUESTAS.txt.
-	* Corrija el problema anterior __SIN hacer uso de sincronización__, pues volver secuencial el acceso a la lista compartida de inmortales haría extremadamente lenta la simulación.
+**Testing 10 Inmortals**
 
-11. Para finalizar, implemente la opción STOP.
+<img src="img/3.9 10Inmortals.png">
+
+**Testing 100 Inmortals**
+
+<img src="img/3.9 100Inmortals.png">
+
+**Testing 1000 Inmortals**
+
+<img src="img/3.9 1000Inmortals.png">
+
+**Testing 10000 Inmortals**
+
+<img src="img/3.9 10000Inmortals.png">
+
+10. One annoying element of the simulation is that at a certain point there are few living ‘immortals’ left, fighting futile battles with ‘immortals’ who are already dead. It is necessary to remove the dead immortals from the simulation as they die. To do this:
+* Analyzing the simulation's operating scheme, could this create a race condition? Implement the functionality, run the simulation, and observe what problem arises when there are many ‘immortals’ in it.
+* Correct the above problem __WITHOUT using synchronization__, as making access to the shared list of immortals sequential would make the simulation extremely slow.
+
+> To do this, we created a new flag *isDead* which is updated when the immortal's life is equal to or less than 0, which means that it is no longer counted as a combat option, thus avoiding failed battles.
+
+11. Finally, implement the STOP option.
+
+> We make all the threads to be dead with *killinmortal* function so the STOP button works correctly and doesn't allow to resume the execution.
+
+**Testing Stop Button**
+
+<img src="img/3.11 stopButton.png">
 
 <!--
 ### Criterios de evaluación

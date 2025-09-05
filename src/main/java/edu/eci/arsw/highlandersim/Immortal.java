@@ -47,7 +47,7 @@ public class Immortal extends Thread {
         this.shouldStop = true;
     }
 
-    public synchronized void resume() {
+    public synchronized void resumeThread() {
         this.shouldStop = false;
         notifyAll();
     }
@@ -65,7 +65,6 @@ public class Immortal extends Thread {
                     try {
                         wait();
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }

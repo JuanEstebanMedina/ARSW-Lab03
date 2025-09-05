@@ -116,7 +116,7 @@ public class ControlFrame extends JFrame {
                 for (Immortal im : immortals) {
                     boolean isDead = im.isDead();
                     if (!isDead) {
-                        im.resume();
+                        im.resumeThread();
                     }
 
                 }
