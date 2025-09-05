@@ -13,17 +13,17 @@
 
 ## Part I - Producer/Consumer
 
-1. Check the program's operation and run it. While this is happening, run jVisualVM and check the CPU consumption of the corresponding process. What is causing this consumption? Which class is responsible?
+> 1. Check the program's operation and run it. While this is happening, run jVisualVM and check the CPU consumption of the corresponding process. What is causing this consumption? Which class is responsible?
 
-> Consumption is due to the *Consumer* class because it is constantly checking whether the *queue* has an element to remove, performing unnecessary validations since the *Producer* has a wait time between each iteration in which it adds elements to the *queue*.
+Consumption is due to the *Consumer* class because it is constantly checking whether the *queue* has an element to remove, performing unnecessary validations since the *Producer* has a wait time between each iteration in which it adds elements to the *queue*.
 
 **Code execution and visualization in *jVisualVM***
 
 <img src="img/1.1 visualvm-ARST.png">
 
-2. Make the necessary adjustments so that the solution uses the CPU more efficiently, bearing in mind that, for now, production is slow and consumption is fast. Check with JVisualVM that CPU consumption is reduced.
+> 2. Make the necessary adjustments so that the solution uses the CPU more efficiently, bearing in mind that, for now, production is slow and consumption is fast. Check with JVisualVM that CPU consumption is reduced.
 
-> As a first solution, we considered using *Thread.sleep(1000)* to delay the execution of *Consumer* and thus avoid unnecessary validations, but this solution, although it makes CPU usage more efficient, is still not the best solution as it increases latency. To address this, we are going to implement thread control with wait/notifyAll, which will make the implementation more efficient in terms of CPU usage without increasing latency.
+As a first solution, we considered using *Thread.sleep(1000)* to delay the execution of *Consumer* and thus avoid unnecessary validations, but this solution, although it makes CPU usage more efficient, is still not the best solution as it increases latency. To address this, we are going to implement thread control with wait/notifyAll, which will make the implementation more efficient in terms of CPU usage without increasing latency.
 
 **Code execution results**
 <img src="img/1.2 wait-notifyall.png">
@@ -32,9 +32,9 @@
 
 <img src="img/1.2 visualvm-efficient.png">
 
-3. Now make the producer produce very quickly and the consumer consume slowly. Given that the producer knows a stock limit (how many items it should have, at most, in the queue), make sure that this limit is respected. Check the API of the collection used as a queue to see how to ensure that this limit is not exceeded. Verify that, when setting a small limit for ‘stock’, there is no high CPU consumption or errors.
+> 3. Now make the producer produce very quickly and the consumer consume slowly. Given that the producer knows a stock limit (how many items it should have, at most, in the queue), make sure that this limit is respected. Check the API of the collection used as a queue to see how to ensure that this limit is not exceeded. Verify that, when setting a small limit for ‘stock’, there is no high CPU consumption or errors.
 
-> For this requirement, we will use *BlockingQueue*, a class that correctly defines the use of multiple threads, blocking while being used by a thread and unblocking when the action is complete. It also allows you to set a limit on the number of elements that will go into the array, meeting the requirements of the exercise.
+For this requirement, we will use *BlockingQueue*, a class that correctly defines the use of multiple threads, blocking while being used by a thread and unblocking when the action is complete. It also allows you to set a limit on the number of elements that will go into the array, meeting the requirements of the exercise.
 
 **Result of executing the code for a stock limit of 3**
 
@@ -141,12 +141,12 @@ public void changeHealth(int v) {
 - By using a single synchronization object, it avoids deadlocks between multiple locks.
 
 
->7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
+> 7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
 
 By using a strategy with a single object for synchronization, we avoid any kind of problem, and the program did not freeze at any point.
 
 
-9. Once the problem has been corrected, verify that the program continues to function consistently when 100, 1,000, or 10,000 immortals are executed. If, in these large cases, the invariant begins to fail again, you must analyze what was done in step 4.
+> 9. Once the problem has been corrected, verify that the program continues to function consistently when 100, 1,000, or 10,000 immortals are executed. If, in these large cases, the invariant begins to fail again, you must analyze what was done in step 4.
 
 **Testing 10 Inmortals**
 
@@ -164,15 +164,15 @@ By using a strategy with a single object for synchronization, we avoid any kind 
 
 <img src="img/3.9 10000Inmortals.png">
 
-10. One annoying element of the simulation is that at a certain point there are few living ‘immortals’ left, fighting futile battles with ‘immortals’ who are already dead. It is necessary to remove the dead immortals from the simulation as they die. To do this:
+> 10. One annoying element of the simulation is that at a certain point there are few living ‘immortals’ left, fighting futile battles with ‘immortals’ who are already dead. It is necessary to remove the dead immortals from the simulation as they die. To do this:
 * Analyzing the simulation's operating scheme, could this create a race condition? Implement the functionality, run the simulation, and observe what problem arises when there are many ‘immortals’ in it.
 * Correct the above problem __WITHOUT using synchronization__, as making access to the shared list of immortals sequential would make the simulation extremely slow.
 
-> To do this, we created a new flag *isDead* which is updated when the immortal's life is equal to or less than 0, which means that it is no longer counted as a combat option, thus avoiding failed battles.
+To do this, we created a new flag *isDead* which is updated when the immortal's life is equal to or less than 0, which means that it is no longer counted as a combat option, thus avoiding failed battles.
 
-11. Finally, implement the STOP option.
+> 11. Finally, implement the STOP option.
 
-> We make all the threads to be dead with *killinmortal* function so the STOP button works correctly and doesn't allow to resume the execution.
+We make all the threads to be dead with *killinmortal* function so the STOP button works correctly and doesn't allow to resume the execution.
 
 **Testing Stop Button**
 
